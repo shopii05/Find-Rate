@@ -6,24 +6,25 @@ import Login from "./pages/Login";
 import Terminos from "./pages/Terminos";
 import Privacidad from "./pages/Privacidad";
 import RecuperarCuenta from "./pages/RecuperarCuenta";
+import ResetPassword from "./pages/ResetPassword";
 import EscribirResena from "./pages/EscribirResena";
 import Hoteles from "./pages/categorias/Hoteles";
 import Restaurantes from "./pages/categorias/Restaurantes";
 import Entretenimiento from "./pages/categorias/Entretenimiento";
 import Atracciones from "./pages/categorias/Atracciones";
 import Dashboard from "./pages/Dashboard";
-
-// ✨ Sistema de notificaciones con animación
-import { Toaster } from "react-hot-toast";
-
-// 👉 Formularios y páginas adicionales
+import Favoritos from "./pages/Favoritos";
 import LugaresForm from "./pages/LugaresForm";
 import Profile from "./pages/profile";
+import EditarPerfil from "./pages/EditarPerfil"; // ✅ importar componente
 
-// 📰 Blog
+// Blog
 import PostList from "./pages/blog/PostList";
 import PostDetail from "./pages/blog/PostDetail";
 import CreatePost from "./pages/blog/createpost";
+
+// Sistema de notificaciones
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
@@ -47,7 +48,6 @@ function App() {
 
       {/* Rutas */}
       <Routes>
-        {/* Páginas principales */}
         <Route path="/" element={<Home />} />
         <Route path="/conocenos" element={<Conocenos />} />
         <Route path="/registro" element={<Registro />} />
@@ -55,24 +55,17 @@ function App() {
         <Route path="/terminos" element={<Terminos />} />
         <Route path="/privacidad" element={<Privacidad />} />
         <Route path="/recuperar-cuenta" element={<RecuperarCuenta />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/escribir-resena" element={<EscribirResena />} />
-
-        {/* Categorías */}
         <Route path="/hoteles" element={<Hoteles />} />
         <Route path="/restaurantes" element={<Restaurantes />} />
         <Route path="/entretenimiento" element={<Entretenimiento />} />
         <Route path="/atracciones" element={<Atracciones />} />
-
-        {/* Dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Perfil */}
         <Route path="/profile" element={<Profile />} />
-
-        {/* Formulario de lugares */}
+        <Route path="/EditarPerfil" element={<EditarPerfil />} /> {/* ✅ nueva ruta */}
         <Route path="/lugaresform" element={<LugaresForm />} />
-
-        {/* Blog */}
+        <Route path="/favoritos" element={<Favoritos />} />
         <Route path="/blog" element={<PostList />} />
         <Route path="/blog/post/:id" element={<PostDetail />} />
         <Route path="/blog/create" element={<CreatePost />} />
@@ -88,7 +81,6 @@ function App() {
         />
       </Routes>
 
-      {/* 🌸 Toaster con animación fade y duración extendida */}
       <Toaster
         position="top-right"
         toastOptions={{
@@ -103,36 +95,9 @@ function App() {
             boxShadow: "0 4px 14px rgba(0,0,0,0.1)",
             transition: "all 0.4s ease-in-out",
           },
-          iconTheme: {
-            primary: "#ec4899",
-            secondary: "#fff",
-          },
-        }}
-        containerStyle={{
-          top: 80,
-          right: 20,
+          iconTheme: { primary: "#ec4899", secondary: "#fff" },
         }}
       />
-      <style>{`
-        /* 🌸 Animación suave */
-        .react-hot-toast {
-          opacity: 0;
-          transform: translateY(-10px);
-          animation: fadeIn 0.5s ease forwards, fadeOut 0.5s ease 5.5s forwards;
-        }
-        @keyframes fadeIn {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeOut {
-          to {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-        }
-      `}</style>
     </Router>
   );
 }

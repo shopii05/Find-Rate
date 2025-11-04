@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaUser, FaPlus, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaPlus, FaHeart, FaSignOutAlt } from "react-icons/fa";
 
 const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -22,17 +22,27 @@ const Dashboard = () => {
           <p className="text-gray-600">No hay usuario logueado.</p>
         )}
 
-        {/* Botones de acción */}
+        {/* Botones de acción según rol */}
         <div className="flex flex-col gap-4 mt-6">
-          {/* Ingresar lugares */}
-          <button
-            onClick={() => navigate("/LugaresForm")}
-            className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-green-400 to-teal-400 text-white font-bold rounded-2xl hover:opacity-90 transition"
-          >
-            <FaPlus /> Ingresar Lugares
-          </button>
+          {user?.id_tipo_rolfk === 2 && (
+            <button
+              onClick={() => navigate("/LugaresForm")}
+              className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-green-400 to-teal-400 text-white font-bold rounded-2xl hover:opacity-90 transition"
+            >
+              <FaPlus /> Ingresar Lugares
+            </button>
+          )}
 
-          {/* Ir a perfil */}
+          {user?.id_tipo_rolfk === 1 && (
+            <button
+              onClick={() => navigate("/favoritos")}
+              className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-pink-400 to-red-400 text-white font-bold rounded-2xl hover:opacity-90 transition"
+            >
+              <FaHeart /> Ver Lugares Favoritos
+            </button>
+          )}
+
+          {/* Ir a perfil (todos los roles) */}
           <Link
             to="/profile"
             className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold rounded-2xl hover:opacity-90 transition"
@@ -40,7 +50,7 @@ const Dashboard = () => {
             <FaUser /> Mi Perfil
           </Link>
 
-          {/* Cerrar sesión */}
+          {/* Cerrar sesión (todos los roles) */}
           <button
             onClick={() => {
               localStorage.removeItem("user");

@@ -1,20 +1,27 @@
-import { UserModel } from "../models/userModel.js";
+import { db } from "../index.js"; // tu conexión MySQL
 
-export const registerUser = async (req, res) => {
+// Obtener usuario por id
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
   try {
-    const result = await UserModel.register(req.body);
-    res.status(201).json({ success: true, message: "Usuario registrado correctamente", ...result });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    const [rows] = await db.query("SELECT * FROM usuario WHERE id_usuario = ?", [id]);
+    if (rows.length === 0) return res.status(404).json({ message: "Usuario no encontrado" });
+    res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error al obtener usuario" });
   }
 };
 
-export const loginUser = async (req, res) => {
+// Actualizar usuario por id
+export const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
   try {
-    const { correo_usuario, password_usuario } = req.body;
-    const user = await UserModel.login(correo_usuario, password_usuario);
-    res.json({ success: true, message: "Inicio de sesión exitoso", user });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    await db.query("UPDATE usuario SET ? WHERE id_usuario = ?", [data, id]);
+    res.json({ message: "Perfil actualizado correctamente" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error al actualizar usuario" });
   }
 };

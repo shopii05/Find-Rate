@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();  // ✅ cargar variables de entorno al inicio
+
 import express from "express";
 import cors from "cors";
-
-// ===== Importar Rutas =====
+import mysql from "mysql2/promise";
 import authRoutes from "./routes/authRoutes.js";
 import alertaRoutes from "./routes/alertaRoutes.js";
 import bitacoraRoutes from "./routes/bitacoraRoutes.js";
@@ -16,14 +18,23 @@ import sucursalRoutes from "./routes/sucursalRoutes.js";
 import tipoNegocioRoutes from "./routes/tipoNegocioRoutes.js";
 import tipoRolRoutes from "./routes/tipoRolRoutes.js";
 import tipoServicioRoutes from "./routes/tipoServicioRoutes.js";
-import recuperarCuentaRoutes from "./routes/recuperarCuenta.js"; // ✅
+import recuperarCuentaRoutes from "./routes/recuperarCuenta.js";
+import resetPasswordRoutes from "./routes/resetPassword.js";
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 // ===== Middlewares =====
 app.use(cors());
 app.use(express.json());
+
+// ===== Conexión a MySQL =====
+export const db = await mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
 
 // ===== Rutas principales =====
 app.use("/api/auth", authRoutes);
@@ -40,7 +51,8 @@ app.use("/api/sucursales", sucursalRoutes);
 app.use("/api/tipoNegocio", tipoNegocioRoutes);
 app.use("/api/tipoRol", tipoRolRoutes);
 app.use("/api/tipoServicio", tipoServicioRoutes);
-app.use("/api/recuperar-cuenta", recuperarCuentaRoutes); // ✅ Aquí la añadimos
+app.use("/api/recuperar-cuenta", recuperarCuentaRoutes);
+app.use("/api/reset-password", resetPasswordRoutes);
 
 // ===== Ruta raíz =====
 app.get("/", (req, res) => {

@@ -1,9 +1,9 @@
 /* eslint-env node */
-
 import express from "express";
 import nodemailer from "nodemailer";
 import { pool } from "../db.js";
 import dotenv from "dotenv";
+import crypto from "crypto";
 
 dotenv.config();
 const router = express.Router();
@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    // Verificar si el correo existe en la base de datos
+    // Verificar si el correo existe
     const [rows] = await pool.query(
       "SELECT * FROM usuario WHERE correo_usuario = ?",
       [correo]
@@ -26,25 +26,30 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "Correo no registrado" });
     }
 
-    // Generar un token aleatorio
-    const token = Math.random().toString(36).substring(2, 10);
+    // Generar token seguro
+    const token = crypto.randomBytes(32).toString("hex");
 
-    // Guardar el token temporalmente en la base de datos
+    // Guardar el token y fecha de expiración
     await pool.query(
-      "UPDATE usuario SET token_recuperacion = ? WHERE correo_usuario = ?",
+      `UPDATE usuario 
+       SET reset_token = ?, 
+           reset_token_expiration = DATE_ADD(NOW(), INTERVAL 1 HOUR)
+       WHERE correo_usuario = ?`,
       [token, correo]
     );
+
+    console.log("Token generado:", token);
 
     // Configurar transporte de nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER, // definido en .env
-        pass: process.env.EMAIL_PASS, // contraseña de aplicación
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Crear enlace de recuperación
+    // Enlace de recuperación
     const enlace = `http://localhost:5173/reset-password/${token}`;
 
     // Enviar correo

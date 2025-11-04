@@ -54,7 +54,7 @@ const Profile = () => {
 
         {/* Botón editar perfil */}
         <button
-          onClick={() => navigate("/edit-profile")}
+          onClick={() => navigate("/EditarPerfil")}
           className="w-full mb-6 px-6 py-3 bg-gradient-to-r from-green-400 to-teal-400 text-white font-bold rounded-2xl hover:opacity-90 transition"
         >
           Editar Perfil
